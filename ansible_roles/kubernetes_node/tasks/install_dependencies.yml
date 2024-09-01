@@ -1,0 +1,67 @@
+# tasks/install_dependencies.yml
+---
+  - name: Install Docker
+    block:
+      - name: Install Dependencies "Debian"
+        apt: 
+          name:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - software-properties-common
+            - python3-pip
+            - virtualenv
+            - python3-setuptools
+          state: latest
+        
+      - name: Add Docker GPG apt Key
+        apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+
+      - name: Add Docker Repository
+        apt_repository:
+          repo: deb https://download.docker.com/linux/ubuntu focal stable
+          state: present
+
+      - name: Update apt and install docker-ce
+        apt:
+          name: docker-ce
+          state: latest
+          update_cache: true
+
+    when: ansible_os_family == "Debian"
+
+  - name: Install cri-o 
+    block:
+    
+      - name: Install dependencies
+        yum:
+          name:
+            - yum-utils
+            - device-mapper-persistent-data
+            - lvm2
+          state: present
+
+      - name: Install and configure CRI-O
+        block:
+          - name: Add CRI-O repository
+            yum_repository:
+              name: crio
+              description: CRI-O Repository
+              baseurl: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.22:/1.22.1/RHEL_8/
+              gpgcheck: yes
+              gpgkey: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.22:/1.22.1/RHEL_8/repodata/repomd.xml.key
+              state: present
+
+          - name: Install CRI-O
+            yum:
+              name: cri-o
+              state: present
+
+          - name: Start and enable CRI-O service
+            systemd:
+              name: crio
+              enabled: yes
+              state: started
+    when: ansible_os_family == "Redhat"

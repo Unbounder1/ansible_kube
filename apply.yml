@@ -1,0 +1,7 @@
+---
+- hosts: servers
+  become: true
+  gather_facts: yes
+  ignore_errors: true
+  roles:
+    - kubernetes_node

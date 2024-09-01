@@ -1,0 +1,16 @@
+# tasks/install_kubelet.yml
+---
+ - name: Install Kubelet & Kubectl
+   package:
+     name:
+       - kubelet
+       - kubeadm
+       - kubectl
+     state: present
+     update_cache: yes
+ - name: Enable Kubelet Service
+   systemd_service:
+     name: kubelet
+     enabled: true
+     state: started
+     

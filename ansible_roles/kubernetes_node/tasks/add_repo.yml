@@ -1,0 +1,43 @@
+# tasks/add_repo.yml
+---
+  - name: Add Repo (RHEL)
+    yum_repository:
+      description: Kubernetes
+      baseurl: https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
+      enabled: 1
+      gpgcheck: 1
+      gpgkey: https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
+      exclude: kubelet kubeadm kubectl cri-tools kubernetes-cni
+    when: ansible_os_family == "Redhat"
+  - block:
+      - name: Ensure the /etc/apt/keyrings directory exists
+        file:
+          path: /etc/apt/keyrings
+          state: directory
+          mode: '0755'
+
+      - name: Download the Kubernetes APT key and save it
+        ansible.builtin.get_url:
+          url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key
+          dest: /tmp/kubernetes-apt-keyring.gpg
+        register: download_result
+
+      - name: Convert the downloaded key to GPG format
+        ansible.builtin.command:
+          cmd: gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kubernetes-apt-keyring.gpg
+        when: download_result is success
+
+      - name: Add Kubernetes APT repository to sources.list.d
+        ansible.builtin.apt_repository:
+          repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /"
+          state: present
+
+      - name: Remove temporary GPG file
+        ansible.builtin.file:
+          path: /tmp/kubernetes-apt-keyring.gpg
+          state: absent
+
+      - name: Update APT cache
+        ansible.builtin.apt:
+          update_cache: yes
+    when: ansible_os_family == "Debian"

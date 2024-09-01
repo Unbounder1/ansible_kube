@@ -1,0 +1,20 @@
+---
+# tasks file for kubernetes_node
+
+- name: Install dependencies
+  import_tasks: install_dependencies.yml
+
+- name: Add Kubernetes Repo
+  import_tasks: add_repo.yml
+
+- name: Remove SELINUX 
+  selinux:
+    state: permissive
+  when: ansible_os_family == "Redhat"
+
+- name: Update apt package cache
+  apt:
+    update_cache: yes
+
+- name: Install Kubernetes
+  import_tasks: install_kubelet.yml
