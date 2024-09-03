@@ -1,6 +1,21 @@
 pipeline {
 
-    agent any
+    agent [
+        kubernetes {
+        label 'ansible-agent'
+        yaml """
+        apiVersion: v1
+        kind: Pod
+        spec:
+            containers:
+            - name: ansible
+            image: jenkins/inbound-agent:alpine
+            command:
+            - cat
+            tty: true
+        """
+    }
+    ]
 
     environment {
         ANSIBLE_PLAYBOOK = 'apply.yml'   // The playbook that runs the role
