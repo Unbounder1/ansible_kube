@@ -9,12 +9,12 @@ pipeline {
             spec:
               containers:
               - name: ansible
-                image: jenkins/inbound-agent:alpine
+                image: debian:latest
                 command:
                 - cat
                 tty: true
                 securityContext:
-                  runAsUser: 0 
+                  runAsUser: 0
             """
         }
     }
@@ -28,7 +28,8 @@ pipeline {
             steps {
                 container('ansible') {
                     sh '''
-                        apk add --no-cache ansible
+                        apt-get update && \
+                        apt-get install -y ansible python3 python3-pip
                     '''
                 }
             }
