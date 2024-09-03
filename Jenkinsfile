@@ -1,6 +1,21 @@
 pipeline {
 
-    agent any
+    agent {
+        kubernetes {
+            label 'ansible-agent'
+            yaml """
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: ansible-ubuntu
+                image: unbounder1/ansible-ubuntu:latest
+                command:
+                - cat
+                tty: true
+            """
+        }
+    }
 
     environment {
         ANSIBLE_PLAYBOOK = 'apply.yml'   // The playbook that runs the role
@@ -16,9 +31,10 @@ pipeline {
             steps {
                 // Run the Ansible playbook using the Ansible plugin
                 ansiblePlaybook(
-                    playbook: "${ANSIBLE_PLAYBOOK}",
-                    colorized: true
-                )
+                playbook: 'path/to/playbook.yml',
+                inventory: 'path/to/inventory.ini',
+                credentialsId: 'sample-ssh-key',
+                colorized: true)
             }
         }
         stage('Deploy') {
