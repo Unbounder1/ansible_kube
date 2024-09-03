@@ -13,12 +13,14 @@ pipeline {
                 command:
                 - cat
                 tty: true
+                securityContext:
+                  runAsUser: 0 
             """
         }
     }
 
     environment {
-        ANSIBLE_PLAYBOOK = 'apply.yml'   // The playbook that runs the role
+        ANSIBLE_PLAYBOOK = 'apply.yml' 
     }
 
     stages {
