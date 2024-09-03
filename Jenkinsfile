@@ -1,67 +1,50 @@
 pipeline {
-
-    agent {
-        kubernetes {
-            label 'ansible-agent'
-            yaml """
-            apiVersion: v1
-            kind: Pod
-            spec:
-              containers:
-              - name: ansible
-                image: jenkins/inbound-agent:alpine
-                command:
-                - cat
-                tty: true
-            """
-        }
-    }
-
-    environment {
-        ANSIBLE_PLAYBOOK = 'apply.yml'   // The playbook that runs the role
-    }
+    agent any
 
     stages {
-        stage('Install Ansible') {
+        stage('Checkout') {
             steps {
-                container('ansible') {
-                    sh '''
-                        apk add --no-cache ansible
-                    '''
-                }
-            }
-        }
-        stage('Checkout SCM') {
-            steps {
+                // Checkout the source code from SCM (e.g., Git)
                 checkout scm
             }
         }
-        stage('Run Ansible Playbook') {
+
+        stage('Build') {
             steps {
-                container('ansible') {
-                    sh '''
-                        ansible-playbook -i path/to/inventory.ini path/to/playbook.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
-                    '''
-                }
+                // Compile or build your project if necessary
+                sh 'echo "Building the project..."'
             }
         }
+
+        stage('Test') {
+            steps {
+                // Run your tests
+                sh 'echo "Running tests..."'
+                // Example: If you have a shell script for testing
+                sh './run-tests.sh'
+            }
+        }
+
         stage('Deploy') {
             steps {
-                sh 'echo "This is my Deploy step"'
+                // Deployment steps (optional)
+                sh 'echo "Deploying application..."'
             }
         }
     }
+
     post {
         always {
-            archiveArtifacts artifacts: '**/results/*'
+            // Archive the test results or any important logs
+            archiveArtifacts artifacts: '**/test-results/*'
         }
 
         success {
-            echo 'Deployment successful!'
+            echo 'All tests passed!'
         }
 
         failure {
-            echo 'Deployment failed!'
+            echo 'Some tests failed.'
         }
     }
 }
