@@ -42,7 +42,7 @@ pipeline {
             steps {
                 container('ansible') {
                     sh '''
-                        ansible-playbook -i path/to/inventory.ini path/to/playbook.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
+                        ansible-playbook ./apply.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
                     '''
                 }
             }
