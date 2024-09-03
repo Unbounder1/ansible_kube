@@ -1,27 +1,21 @@
 pipeline {
 
-    agent {
-        kubernetes {
-            label 'ansible-agent'
-            yaml """
-            apiVersion: v1
-            kind: Pod
-            spec:
-              containers:
-              - name: ansible-ubuntu
-                image: unbounder1/ansible-ubuntu:latest
-                command:
-                - cat
-                tty: true
-            """
-        }
-    }
+    agent all
 
     environment {
         ANSIBLE_PLAYBOOK = 'apply.yml'   // The playbook that runs the role
     }
 
     stages {
+        stage('Install Ansible') {
+            steps {
+                container('ansible') {
+                    sh '''
+                        apk add --no-cache ansible
+                    '''
+                }
+            }
+        }
         stage('Checkout SCM') {
             steps {
             checkout scm
