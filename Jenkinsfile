@@ -1,6 +1,6 @@
 pipeline {
 
-    agent all
+    agent any
 
     environment {
         ANSIBLE_PLAYBOOK = 'apply.yml'   // The playbook that runs the role
