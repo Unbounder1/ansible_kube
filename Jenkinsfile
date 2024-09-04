@@ -48,9 +48,10 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Test') {
             steps {
-                sh 'echo "This is my Deploy step"'
+                sh 'kubectl version'
+                sh 'systemctl status kubelet'
             }
         }
     }
