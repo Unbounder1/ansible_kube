@@ -50,8 +50,11 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'kubectl version'
-                sh 'systemctl status kubelet'
+                container('ansible'){
+                    sh 'kubectl version'
+                    sh 'systemctl status kubelet'
+                }
+                
             }
         }
     }
