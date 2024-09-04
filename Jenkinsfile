@@ -52,7 +52,6 @@ pipeline {
             steps {
                 container('ansible'){
                     sh 'kubectl version'
-                    sh 'systemctl status kubelet'
                 }
                 
             }
