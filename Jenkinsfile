@@ -58,9 +58,9 @@ pipeline {
         }
     }
     post {
-        always {
-            archiveArtifacts artifacts: '**/results/*'
-        }
+        // always {
+        //     archiveArtifacts artifacts: '**/results/*'
+        // }
 
         success {
             echo 'Deployment successful!'
