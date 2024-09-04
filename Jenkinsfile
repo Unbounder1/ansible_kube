@@ -64,6 +64,11 @@ pipeline {
 
         success {
             echo 'Deployment successful!'
+            emailext body: 'Successfully Deployed',
+                subject: 'Deployment Successful',
+                to: 'ryadon12@gmail.com'
+
+
         }
 
         failure {
