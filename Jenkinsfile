@@ -42,7 +42,7 @@ pipeline {
 
 
     stages {
-        stage {'Init'}{
+        stage ('Init'){
             parallel{
                 stage('Checkout SCM') {
                     steps {
