@@ -45,34 +45,30 @@ pipeline {
         stage {'Init'}{
             parallel{
                 stage('Checkout SCM') {
-                        steps {
-                            checkout scm
+                    steps {
+                        checkout scm
+                    }
+                }
+                stage ('Debian Dependencies'){
+                    steps {
+                        container('debian') {
+                            sh '''
+                                apt-get update && \
+                                apt-get install -y ansible python3 python3-pip
+                            '''
                         }
                     }
-
-                stage('Installing Dependencies') {
-                    parallel{
-                        stage ('Debian Dependencies'){
-                            steps {
-                                container('debian') {
-                                    sh '''
-                                        apt-get update && \
-                                        apt-get install -y ansible python3 python3-pip
-                                    '''
-                                }
-                            }
+                }
+                stage ('RHEL Dependencies'){
+                    steps {
+                        container('redhat') {
+                            sh '''
+                                dnf update && \
+                                dnf install -y ansible python3 python3-pip
+                            '''
                         }
-                        stage ('RHEL Dependencies'){
-                            steps {
-                                container('redhat') {
-                                    sh '''
-                                        dnf update && \
-                                        dnf install -y ansible python3 python3-pip
-                                    '''
-                                }
-                            }
-                        }
-                    }              
+                    }
+                }           
                 }
             }
         }
