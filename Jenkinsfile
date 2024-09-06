@@ -69,28 +69,23 @@ pipeline {
                         }
                     }
                 }           
-                }
             }
         }
             
-        stage('Run Ansible Playbook') {
-            parallel{
-                stage ('Apply the playbook'){
-                    steps {
-                        script{
-                            def containers = TEST_ENVIRONMENTS.split(',')
-                            def cmds = { containerName -> container(containerName) {
-                                sh '''
-                                    ansible-playbook ./apply.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
-                                '''
-                            }
-                            }
-                            def parallelStages = containers.collectEntries{
-                                ["${it}", { cmds(it)}]
-                            }
-                            parallel parallelStages
-                        }
+        stage ('Apply the ansible playbook'){
+            steps {
+                script{
+                    def containers = TEST_ENVIRONMENTS.split(',')
+                    def cmds = { containerName -> container(containerName) {
+                        sh '''
+                            ansible-playbook ./apply.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
+                        '''
                     }
+                    }
+                    def parallelStages = containers.collectEntries{
+                        ["${it}", { cmds(it)}]
+                    }
+                    parallel parallelStages
                 }
             }
         }
