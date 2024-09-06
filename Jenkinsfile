@@ -20,7 +20,7 @@ pipeline {
                   runAsUser: 0
                 volumeMounts:
                   - name: checkout-volume
-                  mountPath: /workspace
+                    mountPath: /workspace
               - name: debian
                 image: debian:latest
                 command:
@@ -30,7 +30,7 @@ pipeline {
                   runAsUser: 0
                 volumeMounts:
                   - name: checkout-volume
-                  mountPath: /workspace
+                    mountPath: /workspace
             """
         }
     }
