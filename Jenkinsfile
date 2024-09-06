@@ -37,6 +37,7 @@ pipeline {
 
     environment {
         ANSIBLE_PLAYBOOK = 'apply.yml' 
+        TEST_ENVIRONMENTS = 'debian,redhat'
     }
 
 
@@ -50,46 +51,61 @@ pipeline {
 
             stage('Installing Dependencies') {
                 parallel{
-                    steps {
-                        container('debian') {
-                            sh '''
-                                apt-get update && \
-                                apt-get install -y ansible python3 python3-pip
-                            '''
+                    stage ('Debian Dependencies'){
+                        steps {
+                            container('debian') {
+                                sh '''
+                                    apt-get update && \
+                                    apt-get install -y ansible python3 python3-pip
+                                '''
+                            }
                         }
                     }
-                    steps {
-                        container('redhat') {
-                            sh ```
-                                dnf update && \
-                                dnf install -y ansible python3 python3-pip
-                            ```
+                    stage ('RHEL Dependencies'){
+                        steps {
+                            container('redhat') {
+                                sh '''
+                                    dnf update && \
+                                    dnf install -y ansible python3 python3-pip
+                                '''
+                            }
                         }
                     }
-                }
-    
-
-                
+                }              
             }
-            stage(''
-            )
         }
             
         stage('Run Ansible Playbook') {
-            steps {
-                container('ansible') {
-                    sh '''
-                        ansible-playbook ./apply.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
-                    '''
+            parallel{
+                stage ('Apply the playbook'){
+                    steps {
+                        script{
+                            def containers = TEST_ENVIRONMENTS.split(',')
+                            def cmds = { containerName -> container(containerName) {
+                                sh '''
+                                    ansible-playbook ./apply.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
+                                '''
+                            }
+                            }
+                            def parallelStages = containers.collectEntries{
+                                ["${it}", { cmds(it)}]
+                            }
+                            parallel parallelStages
+                        }
+                    }
                 }
             }
         }
         stage('Test') {
             steps {
-                container('ansible'){
-                    sh 'kubectl version'
+                script {
+                    def containers = TEST_ENVIRONMENTS.split(',')
+                    containers.each { 
+                        containerName -> container(containerName) {
+                            sh 'kubectl version'
+                        }
+                    }
                 }
-                
             }
         }
     }
