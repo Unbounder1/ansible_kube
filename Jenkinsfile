@@ -12,7 +12,7 @@ pipeline {
                   emptyDir: {}
               containers:
               - name: redhat
-                image: redhat:latest
+                image: registry.access.redhat.com/ubi8/ubi:latest
                 command:
                 - cat
                 tty: true
