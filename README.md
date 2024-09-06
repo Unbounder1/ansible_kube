@@ -7,6 +7,7 @@ This repository contains Ansible playbooks for automating the setup and manageme
 - Includes role-based playbooks for easy customization
 - Simplifies deployment of cluster components
 - Currently only supports Debian & Red-Hat distros
+- Can test repo using jenkins
 
 ## Usage
 

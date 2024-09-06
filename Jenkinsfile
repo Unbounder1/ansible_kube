@@ -24,21 +24,25 @@ pipeline {
     }
 
     stages {
-        stage('Install Ansible') {
-            steps {
-                container('ansible') {
-                    sh '''
-                        apt-get update && \
-                        apt-get install -y ansible python3 python3-pip
-                    '''
+        parallel{
+            stage('Install Ansible') {
+                steps {
+                    container('ansible') {
+                        sh '''
+                            apt-get update && \
+                            apt-get install -y ansible python3 python3-pip
+                        '''
+                    }
+                }
+
+                stage('Checkout SCM') {
+                    steps {
+                        checkout scm
+                    }
                 }
             }
         }
-        stage('Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
+            
         stage('Run Ansible Playbook') {
             steps {
                 container('ansible') {
