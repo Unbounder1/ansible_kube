@@ -1,20 +1,36 @@
 pipeline {
 
-    agent {
+    agent { 
         kubernetes {
-            label 'ansible-agent'
+            label 'kube-agent'
             yaml """
             apiVersion: v1
             kind: Pod
             spec:
+              volumes:
+                - name: checkout-volume
+                  emptyDir: {}
               containers:
-              - name: ansible
+              - name: redhat
+                image: redhat:latest
+                command:
+                - cat
+                tty: true
+                securityContext:
+                  runAsUser: 0
+                volumeMounts:
+                - name: checkout-volume
+                mountPath: /workspace
+              - name: debian
                 image: debian:latest
                 command:
                 - cat
                 tty: true
                 securityContext:
                   runAsUser: 0
+                volumeMounts:
+                - name: checkout-volume
+                mountPath: /workspace
             """
         }
     }
@@ -23,24 +39,40 @@ pipeline {
         ANSIBLE_PLAYBOOK = 'apply.yml' 
     }
 
+
     stages {
         parallel{
-            stage('Install Ansible') {
-                steps {
-                    container('ansible') {
-                        sh '''
-                            apt-get update && \
-                            apt-get install -y ansible python3 python3-pip
-                        '''
-                    }
-                }
-
-                stage('Checkout SCM') {
+            stage('Checkout SCM') {
                     steps {
                         checkout scm
                     }
                 }
+
+            stage('Installing Dependencies') {
+                parallel{
+                    steps {
+                        container('debian') {
+                            sh '''
+                                apt-get update && \
+                                apt-get install -y ansible python3 python3-pip
+                            '''
+                        }
+                    }
+                    steps {
+                        container('redhat') {
+                            sh ```
+                                dnf update && \
+                                dnf install -y ansible python3 python3-pip
+                            ```
+                        }
+                    }
+                }
+    
+
+                
             }
+            stage(''
+            )
         }
             
         stage('Run Ansible Playbook') {
