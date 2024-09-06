@@ -19,8 +19,8 @@ pipeline {
                 securityContext:
                   runAsUser: 0
                 volumeMounts:
-                - name: checkout-volume
-                mountPath: /workspace
+                  - name: checkout-volume
+                  mountPath: /workspace
               - name: debian
                 image: debian:latest
                 command:
@@ -29,8 +29,8 @@ pipeline {
                 securityContext:
                   runAsUser: 0
                 volumeMounts:
-                - name: checkout-volume
-                mountPath: /workspace
+                  - name: checkout-volume
+                  mountPath: /workspace
             """
         }
     }
