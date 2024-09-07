@@ -47,9 +47,9 @@
             yum_repository:
               name: crio
               description: CRI-O Repository
-              baseurl: "https://pkgs.k8s.io/addons:/cri-o:/stable:{{ crio_version }}/rpm/"
+              baseurl: "https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ crio_version }}/rpm/"
               gpgcheck: yes
-              gpgkey: "https://pkgs.k8s.io/addons:/cri-o:/stable:{{ crio_version }}/rpm/repodata/repomd.xml.key"
+              gpgkey: "https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ crio_version }}/rpm/repodata/repomd.xml.key"
               enabled: yes
               state: present
           - name: Install CRI-O
