@@ -63,7 +63,7 @@ pipeline {
                     steps {
                         container('redhat') {
                             sh '''
-                                dnf update && \
+                                dnf update -y && \
                                 dnf install -y ansible python3 python3-pip
                             '''
                         }
