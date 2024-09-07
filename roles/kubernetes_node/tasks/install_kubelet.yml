@@ -8,9 +8,9 @@
        - kubectl
      state: present
      update_cache: yes
- - name: Enable Kubelet Service
-   systemd_service:
-     name: kubelet
-     enabled: true
-     state: started
+#  - name: Enable Kubelet Service
+#    systemd_service:
+#      name: kubelet
+#      enabled: true
+#      state: started
      
