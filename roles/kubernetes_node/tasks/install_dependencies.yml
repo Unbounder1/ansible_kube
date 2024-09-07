@@ -64,4 +64,4 @@
               name: crio
               enabled: yes
               state: started
-    when: ansible_os_family == "Redhat"
+    when: ansible_os_family == "RedHat"
