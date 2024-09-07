@@ -56,17 +56,10 @@
               gpgkey: "https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ crio_version }}/rpm/repodata/repomd.xml.key"
               enabled: yes
               state: present
-
-
+              
           - name: Install CRI-O
             yum:
               name: cri-o
               state: present
-
-          - name: Start and enable CRI-O service
-            systemd:
-              name: crio
-              enabled: yes
-              state: started
 
     when: ansible_os_family == "RedHat"

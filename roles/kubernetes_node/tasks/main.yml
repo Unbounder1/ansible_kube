@@ -16,7 +16,15 @@
   apt:
     update_cache: yes
   when: 
-    ansible_os_family == "RedHat:
+    ansible_os_family == "Debian"
 
 - name: Install Kubernetes
   import_tasks: install_kubelet.yml
+
+- name: Start and enable CRI-O service
+  systemd:
+    name: crio
+    enabled: yes
+    state: started
+  when:
+    ansible_os_family == "RedHat"
