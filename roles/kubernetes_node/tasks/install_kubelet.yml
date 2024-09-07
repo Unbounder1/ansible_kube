@@ -12,10 +12,10 @@
       ansible_os_family == "Debian"
 
   - name: Install kubelet, kubeadm, kubectl using dnf with --nobest
-    shell: "dnf install -y --nobest kubelet kubeadm kubectl"
+    shell: "dnf install -y --nobest --skip-broken kubelet kubeadm kubectl"
     when: ansible_os_family == "RedHat"
     changed_when: False
-    
+
 #  - name: Enable Kubelet Service
 #    systemd_service:
 #      name: kubelet
