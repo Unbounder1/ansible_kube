@@ -1,13 +1,21 @@
 # tasks/install_kubelet.yml
 ---
- - name: Install Kubelet & Kubectl
-   package:
-     name:
-       - kubelet
-       - kubeadm
-       - kubectl
-     state: present
-     update_cache: yes
+  - name: Install Kubelet & Kubectl
+    package:
+      name:
+        - kubelet
+        - kubeadm
+        - kubectl
+      state: present
+      update_cache: yes
+    when: 
+      ansible_os_family == "Debian"
+
+  - name: Install kubelet, kubeadm, kubectl using dnf with --nobest
+    shell: "dnf install -y --nobest kubelet kubeadm kubectl"
+    when: ansible_os_family == "RedHat"
+    changed_when: False
+    
 #  - name: Enable Kubelet Service
 #    systemd_service:
 #      name: kubelet

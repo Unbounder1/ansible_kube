@@ -15,6 +15,8 @@
 - name: Update apt package cache
   apt:
     update_cache: yes
+  when: 
+    ansible_os_family == "RedHat:
 
 - name: Install Kubernetes
   import_tasks: install_kubelet.yml

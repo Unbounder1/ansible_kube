@@ -2,6 +2,7 @@
 ---
   - name: Install Docker
     block:
+
       - name: Install Dependencies "Debian"
         apt: 
           name:
@@ -34,13 +35,16 @@
 
   - name: Install cri-o 
     block:
+
       - name: Install dependencies
         yum:
           name:
             - yum-utils
             - device-mapper-persistent-data
             - lvm2
+            - container-selinux
           state: present
+
       - name: Install and configure CRI-O
         block:
           - name: Add CRI-O repository
@@ -52,6 +56,8 @@
               gpgkey: "https://pkgs.k8s.io/addons:/cri-o:/stable:/{{ crio_version }}/rpm/repodata/repomd.xml.key"
               enabled: yes
               state: present
+
+
           - name: Install CRI-O
             yum:
               name: cri-o
@@ -62,4 +68,5 @@
               name: crio
               enabled: yes
               state: started
+
     when: ansible_os_family == "RedHat"
