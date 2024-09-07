@@ -65,7 +65,8 @@ pipeline {
                             sh '''
                                 dnf update -y && \
                                 dnf install -y python39 && \
-                                pip3 install ansible 
+                                pip3 install -y ansible  && \
+                                dnf install -y rhel-system-roles
                             '''
                         }
                     }

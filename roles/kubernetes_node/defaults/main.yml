@@ -1,2 +1,4 @@
 ---
 # defaults file for kubernetes_node
+crio_version: "1.22"
+kubernetes_version: "1.21"
