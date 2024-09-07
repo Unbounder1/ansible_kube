@@ -7,10 +7,10 @@
 - name: Add Kubernetes Repo
   import_tasks: add_repo.yml
 
-- name: Remove SELINUX 
-  selinux:
-    state: permissive
-  when: ansible_os_family == "RedHat"
+# - name: Remove SELINUX 
+#   selinux:
+#     state: permissive
+#   when: ansible_os_family == "RedHat"
 
 - name: Update apt package cache
   apt:
