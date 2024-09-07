@@ -64,9 +64,8 @@ pipeline {
                         container('redhat') {
                             sh '''
                                 dnf update -y && \
-                                dnf install -y python3
-                                python -m ensurepip --upgrade
-                                pip3 install ansible
+                                dnf install -y python39 && \
+                                pip3 install ansible 
                             '''
                         }
                     }
