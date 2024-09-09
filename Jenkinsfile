@@ -53,8 +53,8 @@ pipeline {
                     steps {
                         container('debian') {
                             sh '''
-                                apt-get update && \
-                                apt-get install -y ansible python3 python3-pip
+                                apt-get update -qq && \
+                                apt-get install -y ansible python3 python3-pip -qq
                             '''
                         }
                     }
@@ -63,8 +63,8 @@ pipeline {
                     steps {
                         container('redhat') {
                             sh '''
-                                dnf update -y && \
-                                dnf install -y python39 && \
+                                dnf update -q -y && \
+                                dnf install -q -y python39 && \
                                 pip3 install ansible 
                             '''
                         }

@@ -7,14 +7,24 @@
 - name: Add Kubernetes Repo
   import_tasks: add_repo.yml
 
-- name: Remove SELINUX 
-  selinux:
-    state: permissive
-  when: ansible_os_family == "Redhat"
+# - name: Remove SELINUX 
+#   selinux:
+#     state: permissive
+#   when: ansible_os_family == "RedHat"
 
 - name: Update apt package cache
   apt:
     update_cache: yes
+  when: 
+    ansible_os_family == "Debian"
 
 - name: Install Kubernetes
   import_tasks: install_kubelet.yml
+
+- name: Start and enable CRI-O service
+  systemd:
+    name: crio
+    enabled: yes
+    state: started
+  when:
+    ansible_os_family == "RedHat"
